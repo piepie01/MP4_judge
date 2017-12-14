@@ -1,6 +1,6 @@
 # MP4_judge
 
-* You should install **json** and **socket** for ***python3***
+* You should install **json**,  **socket**, and **select** for ***python3***
 * How to use :
 
 
@@ -25,4 +25,4 @@ then following the **ultra cleary** instruction to judge any spec.
 
 ## Announcement
 
-For now, there is only **spec 2** being finished.
+For now, there are only **spec 2** and **spec four(test)** being finished.
