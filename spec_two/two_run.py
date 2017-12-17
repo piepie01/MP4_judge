@@ -1,11 +1,12 @@
 import socket
 import json
 import time
+import select
 def receive(fd,sock):
-    s = sock[fd].recv(6000)
+    s = fd.recv(6000)
     while 1:
         if 10 not in s:
-            s = s + sock[fd].recv(6000)
+            s = s + fd.recv(6000)
         else:
             break
 #    print(s.decode('ascii'))
@@ -26,13 +27,15 @@ def run(ip_and_port):
             sock[i].close()
             print ("fd : ",i," fail.")
 
-    filter_str1 = "int filter_function(struct User user) { return (user.age == "
+    filter_str1 = "int filter_function(struct User user) { int a=0; for(int i=0;i<100000;i++){a++;} return (user.age == "
     filter_str2 = " );}"
     try_match_dic = {"cmd":"try_match","name":"piepie","age":20,"gender":"male","introduction":"I am piepie~~~","filter_function":"int filter_function(struct User user) { return 1; }"}
 
     worst = 0.0
     total = 0.0
     count = 0
+    output = []
+    timeout = 0.01
     for i in range (int(connect_num/2)):
         tmp_dic = try_match_dic
         tmp_dic["age"] = i
@@ -41,7 +44,7 @@ def run(ip_and_port):
 #        print(json.dumps(tmp_dic))
         print ("生成前一半的客戶,",int(((i+1)/(connect_num/2))*100),"%",end = '\r')
         sock[i].send((json.dumps(tmp_dic)+'\n').encode('ascii'))
-        s = receive(i,sock)
+        s = receive(sock[i],sock)
     print()
     for i in range(int(connect_num/2)):
         tmp_dic = try_match_dic
@@ -49,21 +52,30 @@ def run(ip_and_port):
         tmp_dic["name"] = "piepie" + str(i+int(connect_num/2))
         tmp_dic["filter_function"] = filter_str1 + str(int(connect_num/2)-i-1) + filter_str2
 #        print(json.dumps(tmp_dic))
-        start_time = time.time()
-        sock[(connect_num-i-1)].send((json.dumps(tmp_dic)+'\n').encode('ascii'))
-        s = receive((connect_num-i-1),sock)
-        s = receive((connect_num-i-1),sock)
-        elapsed_time = time.time() - start_time
-        if elapsed_time > worst:
-            worst = elapsed_time
-        total = total + elapsed_time
-        count = count + 1
-        print ("                                                                          ",end = '\r')
-        print ("Average = %fs,"%(total/count),"Worst = %fs,"%(worst),"Now = %fs"%elapsed_time,end = '\r')
-    print()
-    try_match = json.dumps(try_match_dic)
-#    print(try_match)
-#    sock[0].send((try_match+'\n').encode('ascii'))
+        sock[int(connect_num/2)+i].send((json.dumps(tmp_dic)+'\n').encode('ascii'))
+        readable, writable, exceptional = select.select(sock,output,sock,timeout);
+        for fd in readable:
+            tmp = receive(fd,sock)
+    name = "piepie0";
+    start_time = time.time()
+    print(name)
+    judge = 0
+    start = 0
+    while 1:
+        readable, writable, exceptional = select.select(sock,output,sock,timeout);
+        for fd in readable:
+            tmp = receive(fd,sock)
+            s = tmp.decode('ascii')
+            print (s)
+            print (name in s)
+            if name in s:
+                elapsed_time = time.time() - start_time
+                judge = 1
+        if judge == 1:
+            break
+
+
+    print("total = %fs"%elapsed_time)
     for i in range(connect_num):
         print ("關閉所有客戶",int(((i+1)/(connect_num))*100),"%",end = '\r')
         sock[i].close()
