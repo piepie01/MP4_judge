@@ -1,6 +1,8 @@
 import socket
 import json
+import sys
 import time
+from pexpect import *
 import select
 def receive(fd,sock):
     s = fd.recv(6000)
@@ -11,7 +13,7 @@ def receive(fd,sock):
             break
 #    print(s.decode('ascii'))
     return s
-def run(ip_and_port):
+def run_spec(ip_and_port):
     while 1:
         connect = input("客戶端數量(even)：")
         connect_num = int(connect)
@@ -27,7 +29,7 @@ def run(ip_and_port):
             sock[i].close()
             print ("fd : ",i," fail.")
 
-    filter_str1 = "int filter_function(struct User user) { int a=0; for(int i=0;i<100000;i++){a++;} return (user.age == "
+    filter_str1 = "int filter_function(struct User user) { int a=0; for(int i=0;i<10000000;i++){a++;} return (user.age == "
     filter_str2 = " );}"
     try_match_dic = {"cmd":"try_match","name":"piepie","age":20,"gender":"male","introduction":"I am piepie~~~","filter_function":"int filter_function(struct User user) { return 1; }"}
 
@@ -81,3 +83,15 @@ def run(ip_and_port):
         sock[i].close()
         time.sleep(0.2)
     print()
+    print("跑跑單線ing")
+    (command_output, exitstatus) = run ('time spec_two/test',withexitstatus = 1)
+    time.sleep(1)
+    tt = command_output.decode('ascii')
+    line_time = float(tt.split('user')[0]) * (connect_num/2) * (connect_num/2+1)
+    print("單線時間：",line_time)
+    (command_output, exitstatus) = run ('time gcc -fPIC -shared -o spec_two/piepie0.so spec_two/piepie0.c',withexitstatus = 1)
+    tt = command_output.decode('ascii')
+    compile_time = float(tt.split('user')[0]) * (connect_num/2)
+    print("編譯時間",compile_time)
+    print("倍率 = ",(elapsed_time-compile_time)/line_time)
+    return
