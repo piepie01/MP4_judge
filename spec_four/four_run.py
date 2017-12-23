@@ -40,7 +40,7 @@ def run(ip_and_port):
             for fd in readable:
                 tmps = receive(fd)
     print()
-    print("wait for 30sec patiently~~")
+    print("wait for 15sec patiently~~")
     count = 0
     start_time = time.time()
     times = 1
@@ -51,11 +51,12 @@ def run(ip_and_port):
         readable, writeable, exceptional = select.select(inputs, outputs, inputs)
         for fd in readable:
             tmps = receive(fd)
+            #print (tmps)
             count = count + tmps.decode('ascii').count("receive")
         if time.time() - start_time > times:
             print ("time click : ",times,",average message sent(Q/2s) : %f"%(count*2/times),",total message sent : ",count,end = '\r')
             times = times + 1
-        if times > 30:
+        if times > 15:
             print()
             for i in range(connect_num):
                 print ("關閉所有客戶",int(((i+1)/(connect_num))*100),"%",end = '\r')
