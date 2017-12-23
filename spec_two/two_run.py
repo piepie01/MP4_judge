@@ -29,7 +29,7 @@ def run_spec(ip_and_port):
             sock[i].close()
             print ("fd : ",i," fail.")
 
-    filter_str1 = "int filter_function(struct User user) { int a=0; for(int i=0;i<10000000;i++){a++;} return (user.age == "
+    filter_str1 = "int filter_function(struct User user) { int a=0; for(int i=0;i<20000000;i++){a++;} return (user.age == "
     filter_str2 = " );}"
     try_match_dic = {"cmd":"try_match","name":"piepie","age":20,"gender":"male","introduction":"I am piepie~~~","filter_function":"int filter_function(struct User user) { return 1; }"}
 
@@ -62,6 +62,7 @@ def run_spec(ip_and_port):
     start_time = time.time()
     print(name)
     judge = 0
+    count = 0
     start = 0
     while 1:
         readable, writable, exceptional = select.select(sock,output,sock,timeout);
@@ -70,13 +71,19 @@ def run_spec(ip_and_port):
             s = tmp.decode('ascii')
             print (s)
             print (name in s)
+            if 'try_match' in s:
+                count = count + 1
+                print('count : ',count)
+                #if count == int(connect_num/2 -3):
+                    #start_time = time.time()
+                    #print ('start count')
             if name in s:
                 elapsed_time = time.time() - start_time
                 judge = 1
         if judge == 1:
             break
 
-
+    time.sleep(1)
     print("total = %fs"%elapsed_time)
     for i in range(connect_num):
         print ("關閉所有客戶",int(((i+1)/(connect_num))*100),"%",end = '\r')
