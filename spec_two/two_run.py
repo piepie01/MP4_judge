@@ -29,7 +29,7 @@ def run_spec(ip_and_port):
             sock[i].close()
             print ("fd : ",i," fail.")
 
-    filter_str1 = "int filter_function(struct User user) { int a=0; for(int i=0;i<20000000;i++){a++;} return (user.age == "
+    filter_str1 = "int filter_function(struct User user) { int a=0; for(int i=0;i<20000000;i++){a++; if(i == 1999999) puts(\"hi\");} return (user.age == "
     filter_str2 = " );}"
     try_match_dic = {"cmd":"try_match","name":"piepie","age":20,"gender":"male","introduction":"I am piepie~~~","filter_function":"int filter_function(struct User user) { return 1; }"}
 
@@ -70,7 +70,7 @@ def run_spec(ip_and_port):
             tmp = receive(fd,sock)
             s = tmp.decode('ascii')
             print (s)
-            print (name in s)
+            print (fd)
             if 'try_match' in s:
                 count = count + 1
                 print('count : ',count)
