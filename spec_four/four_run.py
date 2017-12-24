@@ -30,7 +30,7 @@ def run(ip_and_port):
     try_match_dic2 = {"cmd":"try_match","name":"fsps60312","age":20,"gender":"male","introduction":"I am fsps60312~~~","filter_function":"int filter_function(struct User user) { for(int i=0;i<2000000000;i++)for(int j=0;j<2000000000;j++)if(j%1000000000==0)puts(\"YA!\"); return 1; }"}
     send_dic = {"cmd": "send_message","message": "MaMa is God!","sequence": 4}
     for i in range(connect_num):
-        if i>=2:
+        if i>=connect_num-2:
             tmp_dic = try_match_dic2
         else:
             tmp_dic = try_match_dic
@@ -51,7 +51,7 @@ def run(ip_and_port):
     times = 1
     while 1:
         for i in range(10):
-            rand = random.randint(2,connect_num-1)
+            rand = random.randint(0,connect_num-3)
             sock[rand].send((json.dumps(send_dic)+'\n').encode('ascii'))
         time.sleep(0.01)
         readable, writeable, exceptional = select.select(inputs, outputs, inputs)
