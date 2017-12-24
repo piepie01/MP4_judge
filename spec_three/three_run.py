@@ -37,10 +37,10 @@ def run_spec(ip_and_port):
     for i in range (3):
         sock[i].send(((datalist[i])+'\n').encode('ascii'))
         s = receive(sock[i],sock)
-    print('wait for 10 sec.')
+    print('wait for 20 sec.')
     start_time = time.time()
     while 1:
-        if int(time.time() - start_time) > 10:
+        if int(time.time() - start_time) > 20:
             break
         readable, writable, exceptional = select.select(sock,output,sock,timeout);
         for fd in readable:
