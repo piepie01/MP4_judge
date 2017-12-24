@@ -13,7 +13,7 @@ def receive(fd):
     #print(s.decode('ascii'))
     return s
 def run(ip_and_port):
-    connect = input("客戶端數量：")
+    connect = input("客戶端數量(>4，2個用來卡配對，剩下用來傳訊息)：")
     print ("生成",connect,"個客戶",end = '\r')
     connect_num = int(connect)
     sock = [socket.socket(socket.AF_INET, socket.SOCK_STREAM) for _ in range(connect_num)]
@@ -27,9 +27,13 @@ def run(ip_and_port):
             sock[i].close()
             print ("fd : ",i," fail.")
     try_match_dic = {"cmd":"try_match","name":"piepie","age":20,"gender":"male","introduction":"I am piepie~~~","filter_function":"int filter_function(struct User user) { return 1; }"}
+    try_match_dic2 = {"cmd":"try_match","name":"fsps60312","age":20,"gender":"male","introduction":"I am fsps60312~~~","filter_function":"int filter_function(struct User user) { for(int i=0;i<2000000000;i++)for(int j=0;j<2000000000;j++)if(j%1000000000==0)puts(\"YA!\"); return 1; }"}
     send_dic = {"cmd": "send_message","message": "MaMa is God!","sequence": 4}
     for i in range(connect_num):
-        tmp_dic = try_match_dic
+        if i>=2:
+            tmp_dic = try_match_dic2
+        else:
+            tmp_dic = try_match_dic
         tmp_dic["name"] = "piepie" + str(i)
         print ("生成",connect,"個客戶,",int(((i+1)/(connect_num))*100),"%",end = '\r')
         sock[i].send((json.dumps(tmp_dic)+'\n').encode('ascii'))
@@ -47,7 +51,7 @@ def run(ip_and_port):
     times = 1
     while 1:
         for i in range(10):
-            rand = random.randint(0,connect_num-1)
+            rand = random.randint(2,connect_num-1)
             sock[rand].send((json.dumps(send_dic)+'\n').encode('ascii'))
         time.sleep(0.01)
         readable, writeable, exceptional = select.select(inputs, outputs, inputs)
