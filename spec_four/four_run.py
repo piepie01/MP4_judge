@@ -39,6 +39,7 @@ def run(ip_and_port):
                 break;
             for fd in readable:
                 tmps = receive(fd)
+    time.sleep(1.0)
     print()
     print("wait for 15sec patiently~~")
     count = 0
@@ -48,6 +49,7 @@ def run(ip_and_port):
         for i in range(10):
             rand = random.randint(0,connect_num-1)
             sock[rand].send((json.dumps(send_dic)+'\n').encode('ascii'))
+        time.sleep(0.01)
         readable, writeable, exceptional = select.select(inputs, outputs, inputs)
         for fd in readable:
             tmps = receive(fd)
@@ -58,10 +60,11 @@ def run(ip_and_port):
             times = times + 1
         if times > 15:
             print()
+            time.sleep(1.0)
             for i in range(connect_num):
                 print ("關閉所有客戶",int(((i+1)/(connect_num))*100),"%",end = '\r')
                 sock[i].close()
-                time.sleep(1)
+                time.sleep(0.05)
             print()
             break
 
