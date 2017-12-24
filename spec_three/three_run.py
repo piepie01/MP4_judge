@@ -54,6 +54,7 @@ def run_spec(ip_and_port):
             if '127_2' in s:
                 count = count + 1
     print('count = ',count)
+    time.sleep(0.5)
     if count == 2:
         print ('correct')
         sock[3].send(((datalist[1])+'\n').encode('ascii'))
