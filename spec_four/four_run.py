@@ -61,7 +61,7 @@ def run(ip_and_port):
             for i in range(connect_num):
                 print ("關閉所有客戶",int(((i+1)/(connect_num))*100),"%",end = '\r')
                 sock[i].close()
-                time.sleep(0.2)
+                time.sleep(1)
             print()
             break
 
