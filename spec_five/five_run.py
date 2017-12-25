@@ -48,4 +48,7 @@ def run_spec(ip_and_port):
         sock[i].close()
         time.sleep(0.1)
     print()
+    print("I send some unmatched clients to your server and close them immediately.")
+    print("To check if you can support this feature, try other spec right now without closing server.")
+    print("                   Good luck.")
 
