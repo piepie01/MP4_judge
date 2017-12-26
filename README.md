@@ -25,4 +25,5 @@ then following the **ultra cleary** instruction to judge any spec.
 
 ## Announcement
 
-For now, there are only **spec 2** and **spec four(test)** being finished.
+For now, there are **spec two**, **spec three**, **spec four**, and **spec five** being finished.
+Spec four will send a ultra costly filter function, you might need to kill your server and child process after testing spec four.
